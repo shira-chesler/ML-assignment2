@@ -2,9 +2,20 @@ import numpy as np
 
 
 def perceptron_algorithm(data, labels):
-    weights = np.zeros(data.shape[1])
-    changed_weights = True
-    iteration_num = 0
+    """
+    Implements the Perceptron algorithm to find the optimal weights for binary classification.
+
+    Parameters:
+    data (numpy.ndarray): The input data points, where each row represents a data point.
+    labels (numpy.ndarray): The corresponding labels for the data points, assumed to be -1 or 1.
+
+    Returns:
+    numpy.ndarray: The final weights after training.
+    int: The number of iterations until convergence.
+    """
+    weights = np.zeros(data.shape[1])  # Initialize weights as a zero vector
+    changed_weights = True  # Flag to check if weights have changed in an iteration
+    iteration_num = 0  # Counter for the number of iterations
     while changed_weights:
         iteration_num += 1
         changed_weights = False
@@ -16,16 +27,25 @@ def perceptron_algorithm(data, labels):
                 prediction = -1
             if prediction != labels[i]:
                 if labels[i] == 1:
-                    weights += data[i]
-                    changed_weights = True
+                    weights += data[i]  # Update weights for positive label
                 else:
-                    weights -= data[i]
-                    changed_weights = True
-                break
+                    weights -= data[i]  # Update weights for negative label
+                changed_weights = True  # Indicate that weights have changed
+                break  # Break to start the next iteration
     return weights, iteration_num
 
 
 def parse_file(path_to_file):
+    """
+    Parses a file containing data points and labels.
+
+    Parameters:
+    path_to_file (str): The path to the file containing the data.
+
+    Returns:
+    numpy.ndarray: The parsed data points.
+    numpy.ndarray: The parsed labels.
+    """
     data = []
     labels = []
     with open(path_to_file) as f:
@@ -37,6 +57,16 @@ def parse_file(path_to_file):
 
 
 def get_line_from_weights(weights):
+    """
+    Calculates the slope and y-intercept of the decision boundary line from the weights.
+
+    Parameters:
+    weights (numpy.ndarray): The weights of the decision boundary.
+
+    Returns:
+    float: The slope of the line.
+    float: The y-intercept of the line.
+    """
     w1, w2 = weights
     slope = -w1 / w2
     y_intercept = 0
@@ -44,6 +74,17 @@ def get_line_from_weights(weights):
 
 
 def get_distance_from_line(slope, y_intercept, point):
+    """
+    Calculates the perpendicular distance from a point to a line.
+
+    Parameters:
+    slope (float): The slope of the line.
+    y_intercept (float): The y-intercept of the line.
+    point (tuple): The coordinates of the point.
+
+    Returns:
+    float: The perpendicular distance from the point to the line.
+    """
     a = slope
     b = -1
     c = y_intercept
@@ -53,6 +94,16 @@ def get_distance_from_line(slope, y_intercept, point):
 
 
 def find_min_distance(weights, data_points):
+    """
+    Finds the minimum distance from any data point to the decision boundary line.
+
+    Parameters:
+    weights (numpy.ndarray): The weights of the decision boundary.
+    data_points (numpy.ndarray): The data points.
+
+    Returns:
+    float: The minimum distance from any data point to the line.
+    """
     slope, y_intercept = get_line_from_weights(weights)
     min_distance = float('inf')
     for point in data_points:
