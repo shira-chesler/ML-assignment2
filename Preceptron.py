@@ -15,9 +15,8 @@ def perceptron_algorithm(data, labels):
     """
     weights = np.zeros(data.shape[1])  # Initialize weights as a zero vector
     changed_weights = True  # Flag to check if weights have changed in an iteration
-    iteration_num = 0  # Counter for the number of iterations
+    error_num = 0  # Counter for the number of iterations
     while changed_weights:
-        iteration_num += 1
         changed_weights = False
         for i in range(data.shape[0]):
             prediction = np.dot(data[i], weights)
@@ -26,13 +25,14 @@ def perceptron_algorithm(data, labels):
             else:
                 prediction = -1
             if prediction != labels[i]:
+                error_num += 1
                 if labels[i] == 1:
                     weights += data[i]  # Update weights for positive label
                 else:
                     weights -= data[i]  # Update weights for negative label
                 changed_weights = True  # Indicate that weights have changed
                 break  # Break to start the next iteration
-    return weights, iteration_num
+    return weights, error_num
 
 
 def parse_file(path_to_file):
